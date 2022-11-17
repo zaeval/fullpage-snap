@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .section {
+            height: 100vh;
+            width: 10vw;
+        }
+
+        .blue {
+            background-color: blue;
+            height: 300vh;
+        }
+
+        .red {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="section" aria-down-snap-trigger aria-up-snap-handler>
+    a
+</div>
+<div class="">
+    bb
+    <div class="section blue" aria-down-snap-trigger aria-down-snap-handler
+         aria-up-snap-trigger aria-up-snap-handler aria-up-snap-type="leave"
+         aria-down-snap-type="leave"
+    >
+        b
+    </div>
+</div>
+<div class="section" aria-down-snap-trigger aria-down-snap-handler
+     aria-up-snap-trigger aria-up-snap-handler>
+    c
+</div>
+<div class="section" aria-block-trigger>
+    a
+</div>
+<div class="section" aria-block-trigger>
+    a
+</div>
+<div class="section red" aria-down-snap-handler
+     aria-up-snap-trigger>
+    end
+</div>
+<script src="fullpage-snap.js"></script>
+</body>
+</html>
