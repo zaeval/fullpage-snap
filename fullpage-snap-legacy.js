@@ -93,7 +93,9 @@ blockTriggers.forEach((blockTrigger) => {
 })
 triggers.forEach((trigger, idx) => {
     trigger.addEventListener("wheel", async (event) => {
-        if (activate) {
+        const isMouse = !(event.wheelDeltaY ? event.wheelDeltaY === -3 * event.deltaY : event.deltaMode === 0);
+        console.log(isMouse)
+        if (activate && isMouse) {
             activate = false
             if (event.deltaY < 0) {
                 const idx = event.currentTarget.upIdx
