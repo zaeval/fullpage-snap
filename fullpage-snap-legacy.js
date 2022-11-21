@@ -5,7 +5,7 @@ const blockTriggers = document.querySelectorAll("*[aria-block-trigger]")
 const downHandlers = document.querySelectorAll("*[aria-down-snap-handler]")
 const upHandlers = document.querySelectorAll("*[aria-up-snap-handler]")
 
-const DURATION = 1000;/*ms*/
+let debugMode = false
 
 downTriggers.forEach((downTrigger, idx) => {
     downTrigger.downIdx = idx
@@ -15,7 +15,7 @@ upTriggers.forEach((upTrigger, idx) => {
     upTrigger.upIdx = idx
 })
 
-var visibleY = function (el, deltaY) {
+var visibleY = function(el, deltaY) {
     var rect = el.getBoundingClientRect()
     if (rect.top - deltaY > 0 && deltaY < 0) return false
     if (rect.bottom - deltaY - document.documentElement.clientHeight < 0 && deltaY > 0) return false
@@ -35,18 +35,17 @@ function smoothScroll(elem, options) {
         let same = 0 // a counter
         let lastPos = null // last known Y position
         // pass the user defined options along with our default
-        const scrollOptions = Object.assign({behavior: "smooth"}, options)
+        const scrollOptions = Object.assign({ behavior: "smooth" }, options)
         console.log("animated")
         // let's begin
         const headerOffset = vh(scrollOptions.offsetVH)
-        const elementPosition = (scrollOptions.block == "start") ? ($(elem).position().top) : ($(elem).position().top + $(elem).height() - window.innerHeight)
-        const offsetPosition = elementPosition - headerOffset
+        const elementPosition = elem.getBoundingClientRect().top
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset
 
-        // window.scrollTo({
-        //     top: offsetPosition,
-        //     behavior: "smooth",
-        // })
-        $('html, body').animate({scrollTop: offsetPosition}, DURATION);
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth",
+        })
         requestAnimationFrame(check)
 
         // this function will be called every painting frame
@@ -81,20 +80,23 @@ function smoothScroll(elem, options) {
 var activate = true
 
 async function smoothScrollTo(el, blockType, offsetVH) {
-    await smoothScroll(el, {block: blockType, offsetVH: offsetVH})
+    await smoothScroll(el, { block: blockType, offsetVH: offsetVH })
     activate = true
 }
 
 blockTriggers.forEach((blockTrigger) => {
+    const isMouse = !(event.wheelDeltaY ? event.wheelDeltaY === -3 * event.deltaY : event.deltaMode === 0) || debugMode;
     blockTrigger.addEventListener("wheel", (event) => {
-        event.preventDefault()
-        return false
+        if(isMouse) {
+            event.preventDefault()
+            return false
+        }
     })
 })
 triggers.forEach((trigger, idx) => {
     trigger.addEventListener("wheel", async (event) => {
-        const isMouse = !(event.wheelDeltaY ? event.wheelDeltaY === -3 * event.deltaY : event.deltaMode === 0);
-        console.log(isMouse)
+        const isMouse = !(event.wheelDeltaY ? event.wheelDeltaY === -3 * event.deltaY : event.deltaMode === 0) || debugMode;
+        console.log(isMouse);
         if (activate && isMouse) {
             activate = false
             if (event.deltaY < 0) {
