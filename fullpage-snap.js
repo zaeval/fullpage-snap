@@ -5,6 +5,8 @@ const blockTriggers = document.querySelectorAll("*[aria-block-trigger]")
 const downHandlers = document.querySelectorAll("*[aria-down-snap-handler]")
 const upHandlers = document.querySelectorAll("*[aria-up-snap-handler]")
 
+const DURATION = 1000;/*ms*/
+
 var currentSlide = 0
 var activate = true
 
@@ -40,13 +42,14 @@ function smoothScroll(elem, options) {
         console.log("animated")
         // let's begin
         const headerOffset = vh(scrollOptions.offsetVH)
-        const elementPosition = elem.getBoundingClientRect().top
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+        const elementPosition = (scrollOptions.block == "start") ? ($(elem).position().top) : ($(elem).position().top + $(elem).height() - window.innerHeight)
+        const offsetPosition = elementPosition - headerOffset
 
-        window.scrollTo({
-            top: offsetPosition,
-            behavior: "smooth",
-        })
+        // window.scrollTo({
+        //     top: offsetPosition,
+        //     behavior: "smooth",
+        // })
+        $('html, body').animate({scrollTop: offsetPosition}, DURATION);
         requestAnimationFrame(check)
 
         // this function will be called every painting frame
